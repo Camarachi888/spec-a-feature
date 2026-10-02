@@ -4919,3 +4919,62 @@ File names include document type and team identifier.
 **Related Use Cases:** UC-AI-critique: Request a critique from the critique assistant; UC-AI-consult-project-assistant: Consult the project assistant; UC-CFG-configure-review-criteria: Configure the cross-document review criteria for a course section; UC-VAL-run-validation: Run validation (ReqLint) on the current document; UC-AI-review-proposal: Review and accept or reject an assistant proposal; UC-DOC-edit-document: Edit a section-based requirement document; UC-DOC-edit-use-case: Edit a use case.
 **Assumptions:**
 **Open Issues:**
+
+### **UC-NOT-send-targeted-reminders: The instructor sends assignment reminders to students with outstanding submissions** 
+**UC ID and Name:** UC-NOT-send-targeted-reminders: Send targeted reminders
+**Created By:** Amarachi Chiemela
+**Date Created:** October 1, 2026
+**Primary Actor:** Instructor
+**Secondary Actors:** Email Service
+**Trigger:**  The instructor selects the option to send targeted reminders to students with outstanding submissions.
+**Description:** The instructor sends targeted email reminders to students who have not submitted their weekly activity reports or peer evaluations for a selected week. The system identifies eligible students based on the selected assignment's submission status and deadline, allowing the instructor to send reminders only to students with outstanding work.
+
+**Preconditions:**
+- PRE-1. The instructor is logged into the system.
+- PRE-2. The instructor is authorized to access the selected course section.
+- PRE-3. The selected week is an active week for the course selection.
+- PRE-4. The submission window for the selected assignment is open.
+
+**Postconditions:**
+- POST-1. Targeted reminders have been sent to the selected students.
+- POST-2. The system has recorded each successfully sent reminder to enforce the weekly reminder limit.
+- POST-3. The instructor is informed of the outcome, including any reminders that were unsuccessful.
+
+**Main Success Scenario:**
+1. The instructor navigates to the targeted reminder feature within an authorized course section.
+2. The system displays the available weeks and assignment types.
+3. The instructor selects the weeks and assignment type (WAR or Peer Eval).
+4. The system retrieves the submission records for the selected assignment and week.
+5. The system identifies students who are assigned to a team, have no currently valid submission for the selected assignment and week, and have not already received a targeted reminder for that assignment and week.
+6. The system displays the eligible students.
+7. The instructor selects the students to receive a reminder.
+8. The instructor confirms the action.
+9. The system sends an email reminder to each selected student.
+10. The system records each successfully sent reminder.
+11. The system displays the outcome of the operation to the instructor.
+12. Use case ends.
+
+**Extensions:**
+- **5a. There are no students with outstanding submissions**
+  - 5a1. The system informs the instructor that there are no outstanding submissions for the selected assignment and week.
+- **5b. The selected student has already received a targeted reminder**
+  - 5b1. The system excludes the student from the list of eligible students in accordance with BR-targeted-reminder-limit.
+  - 5b2. The system continues with step 6.
+- **5c. The selected student previously submitted and subsequently deleted the submission**
+  - 5c1. The system evaluates the 
+- **5a. The recommended assistant is disabled for the course section**
+  - 5a1. The system tells the student the recommended assistant is unavailable and suggests an available alternative or action.
+
+**Priority:** High
+**Frequency of Use:** Frequent; a common entry point into the project workspace throughout the project.
+**Business Rules:** BR-assistant-enablement, BR-assistant-socratic — The project assistant shall be Socratic — it shall orient, explain, and route rather than author requirement content. The assistant must be enabled for the course section (UC-CFG-toggle-assistants). The system shall not author or modify student content with assistant-generated text without explicit confirmation. When routing the student into a specialized assistant, the system shall honor that assistant's own enablement and rules for the course section.
+**Associated Information:**
+- The assistant is a router over the specialized assistants; it invokes their use cases rather than duplicating their behavior — for example, broad, project-wide elicitation runs through UC-AI-elicit-requirements.
+- It draws on the project's current requirements coverage, the imported project source material, and the teaching context configured for the course section (UC-CFG-configure-teaching-context).
+- Educational intent: it lowers the cost of finding the right next step without doing the student's thinking for her; productivity is deliberately subordinate to learning.
+- All calls to the LLM Service are routed through the server-side AI proxy.
+- Honors FR-AI-no-auto-edit, FR-AI-enablement, FR-AI-degradation.
+
+**Related Use Cases:** UC-AI-elicit-requirements: Elicit requirements with the elicitation assistant; UC-AI-critique: Request a critique from the critique assistant; UC-AI-whole-project-review: Request a whole-project review from the critique assistant; UC-AI-tutor: Ask an assistant to explain a concept (Tutor Mode); UC-DOC-edit-document: Edit a section-based requirement document; UC-DOC-edit-use-case: Edit a use case; UC-CFG-configure-teaching-context: Configure the teaching context for a course section; UC-CFG-toggle-assistants: Enable or disable AI assistants for a course section.
+**Assumptions:**
+**Open Issues:**
